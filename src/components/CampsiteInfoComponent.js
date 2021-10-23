@@ -1,20 +1,93 @@
-import React from "react";
-import { Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import React, { Component } from "react";
+import { Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem,Button,Modal, ModalHeader, ModalBody,
+ Label } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { Control, LocalForm, Errors } from 'react-redux-form';
 
+const minLength = (val) => val && val.length >= 2;
+const maxLength = (val) => val && val.length <= 15;
 
- function RenderCampsite({campsite}) {
+function RenderCampsite({campsite}) {
+  return (
+    <div className="col-md-5 m-1">
+      <Card>
+        <CardImg top src={campsite.image} alt={campsite.name} />
+          <CardBody>
+              <CardText>{campsite.description}</CardText>
+          </CardBody>
+      </Card>
+    </div>
+  );
+}
+
+class CommentForm extends React.Component {
+
+  state = {
+    isModalOpen:false,
+  };
+
+ toggleModal=() => {
+   this.setState({
+     isModalOpen:!this.state.isModalOpen,
+   });  
+};
+
+handleSubmit = (values) => {
+  alert(JSON.stringify(values));
+};
+
+  render () {
     return (
-      <div className="col-md-5 m-1">
-        <Card>
-          <CardImg top src={campsite.image} alt={campsite.name} />
-            <CardBody>
-                <CardText>{campsite.description}</CardText>
-            </CardBody>
-        </Card>
+      <div>
+          <Button type="submit" onClick={this.toggleModal} outline>
+          <i className="fa fa-pencil fa-lg pr-1" />
+            Submit Comment
+          </Button>
+
+          <Modal isOpen={this.state.isModalOpen} toggle = {this.toggleModal}>
+            <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
+            <ModalBody>
+               <LocalForm >
+                 <div className="form-group">
+                   <Label>Rating</Label>
+                   <Control.select model=".rating" id="rating" name="rating"
+                      className="form-control" defaultValue="1">
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                  </Control.select>
+                 </div>
+                 <div className="form-group">
+                   <Label>Your Name</Label>
+                   <Control.text model=".name" id="name" name="name"
+                      className="form-control"  validators={{
+                        minLength: minLength,
+                        maxLength: maxLength,
+                      }}/>
+                      <Errors model=".name" show="touched" component="div" className="text-danger" messages={{
+                        minLength: "min length must be 2 characters",
+                        maxLength: "max length must  be 15 characters",
+                      }}/>
+                 </div>
+                 <div className="form-group">
+                   <Label>Comment</Label>
+                   <Control.textarea model=".comment" id="comment" name="comment"
+                      className="form-control" rows="6" />
+                 </div>
+                 <Button color="primary"> Submit</Button>
+            </LocalForm> 
+            </ModalBody>
+          </Modal>
       </div>
+      
     );
   }
+}
+
+
+
 
   function RenderComments({comments}) {
     if (comments) {
@@ -37,6 +110,7 @@ import { Link } from 'react-router-dom';
               </div>
             );
           })}
+          <CommentForm />
         </div>
       );
     }
