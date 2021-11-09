@@ -209,22 +209,7 @@ export const postFeedback = (newFeedback) => () => {
         "Content-Type": "application/json",
       },
     })
-      // .then(
-      //   (response) => {
-      //     if (response.ok) {
-      //       return response;
-      //     } else {
-      //       const error = new Error(
-      //         `Error ${response.status}: ${response.statusText}`
-      //       );
-      //       error.response = response;
-      //       throw error;
-      //     }
-      //   },
-      //   (error) => {
-      //     throw error;
-      //   }
-      // )
+     
       .then((response) => response.json())
       .then((response) => {
         alert("feedback submitted", JSON.stringify(response));
